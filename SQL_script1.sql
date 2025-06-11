@@ -133,3 +133,25 @@ GROUP BY order_year_month
 ) t
 ;
 
+	-- Moving average
+    
+    SELECT
+order_year_month, 
+total_sales,
+SUM(total_sales) OVER (ORDER BY order_year_month) AS running_total_sales,
+AVG(avg_price) OVER (ORDER BY order_year_month) AS moving_average_price
+FROM
+(
+SELECT 
+DATE_FORMAT(order_date, '%Y-%m') AS order_year_month, 
+SUM(sales_amount) AS total_sales,
+AVG(price) AS avg_price
+FROM gold_fact_sales
+WHERE order_date > 2010-01-01
+GROUP BY order_year_month
+) t
+;
+
+-- Proformancec Analysis --
+/* Analyze the yearly performance of products by comparing their sales 
+to both the average sales performance of the product and the previous year's sales */
